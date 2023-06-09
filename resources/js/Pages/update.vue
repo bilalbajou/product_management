@@ -2,7 +2,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
-defineProps({ errors: Object })
+const props=defineProps({ 
+    errors: Object,
+    product:Object 
+})
 
 import { usePage } from '@inertiajs/vue3'
 
@@ -10,17 +13,24 @@ const page = usePage()
 
 
 const form = useForm({
-    name: null,
-    description: null,
-    price: null,
+    name: props.product.name ?? null,
+    description: props.product.description ?? null,
+    price: props.product.price ?? null,
     image: null,
-    quantity: null
+    quantity: props.product.quantity ?? null,
+    _method: 'PUT'
 });
 
-const submit = () => {
-    form.post(route('products.store'),{
-        preserveScroll:true
+const submit = (id) => {
+    form.post(route('products.update',id),{
+        preserveScroll:true,
+        onSuccess: () => {
+            page.props.flash.success = 'Product updated successfully.';
+        }
+
+
     });
+ 
  
 }
 
@@ -28,7 +38,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Add Product" />
+    <Head title="Update Product" />
 
     <AuthenticatedLayout>
 
@@ -90,11 +100,11 @@ const submit = () => {
                         <div class="flex items-center justify-between">
                             <Link
                             
-                            as="button"
-                            href=""
+                            
+                                  href=""
                                 :disabled="form.processing"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                @click.prevent="submit">Submit
+                                @click.prevent="submit(product.id)">Submit
                             </Link>
                         </div>
                     </form>

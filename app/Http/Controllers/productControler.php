@@ -44,18 +44,16 @@ class productControler extends Controller
                 'image' => 'bail|nullable|image',
                 'quantity'=>'bail|nullable|numeric'
             ]);
-             if($request->file('image')){
-                $image = $request->file('image');
-                $imageName = time().'.'.$image->extension();
-             }
+            
            
             $product = new Product([
                 'name' => $request->get('name'),
                 'price' => $request->get('price'),
-                'description' => $request->get('description'),
-                'image' => $imageName,
+                'description' => $request->get('description')
             ]);
             if($request->file('image')){
+            $image = $request->file('image');
+            $imageName = time().'.'.$image->extension();
             $image->move(public_path('images'),$imageName);
               }
             $product->save();
@@ -81,7 +79,13 @@ class productControler extends Controller
      */
     public function edit($id)
     {
-        //
+        
+            $product = Product::findOrfail($id);
+            return Inertia::render('update', [
+                  'product' => $product
+             ]);
+                
+            
     }
 
     /**
@@ -93,7 +97,29 @@ class productControler extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+           
+            $request->validate([
+                'name' => 'bail|required|string',
+                'price' => 'bail|required|numeric',
+                'description' => 'bail|nullable|required',
+                'image' => 'bail|nullable|image',
+                'quantity'=>'bail|nullable|numeric'
+            ]);
+            
+           
+            $product = Product::find($id);
+            $product->name =  $request->get('name');
+            $product->price = $request->get('price');
+            $product->description = $request->get('description');
+            if($request->file('image')){
+            $image = $request->file('image');
+            $imageName = time().'.'.$image->extension();
+            $image->move(public_path('images'),$imageName);
+            $product->image = $imageName;
+              }
+            $product->save();
+            return Inertia::render('update');
+        
     }
 
     /**
@@ -104,6 +130,8 @@ class productControler extends Controller
      */
     public function destroy($id)
     {
-        //
+                $product = Product::find($id);
+                $product->delete();
+                return redirect('/dashboard')->with('success', 'Product deleted!');
     }
 }
