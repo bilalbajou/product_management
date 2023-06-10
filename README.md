@@ -1,7 +1,7 @@
 
 # Project Title
 
-Product Manager is a web application built with Laravel, Inertia.js and Vue.js. It allows users to manage products, categories, and suppliers.
+Product Manager is a web application built with Laravel, Inertia.js and Vue.js. It allows users to manage products
 
 
 
