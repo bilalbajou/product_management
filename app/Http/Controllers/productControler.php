@@ -118,7 +118,7 @@ class productControler extends Controller
             $product->image = $imageName;
               }
             $product->save();
-            return Inertia::render('update');
+            return to_route('products.edit',$product->id);
         
     }
 
